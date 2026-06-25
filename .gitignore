@@ -1,22 +1,20 @@
-# Build folders
+# Build output
 Debug/
 Release/
 
-# Object and dependency files
+# STM32CubeIDE settings
+.settings/
+
+# Object files
 *.o
 *.d
-*.su
 
-# Executables and binaries
+# Generated binaries
 *.elf
 *.bin
 *.hex
 *.map
 *.list
-
-# Eclipse/STM32CubeIDE temporary files
-.metadata/
-tmp/
 
 # OS files
 Thumbs.db
