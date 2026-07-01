@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "FreeRTOS.h"
+#include "task.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,7 +51,8 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-
+static void task1_handler(void* parameters);
+static void task2_handler(void* parameters);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -65,7 +68,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  TaskHandle_t task1Handle;
+  TaskHandle_t task2Handle;
+  BaseType_t status;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -87,6 +92,17 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  status = xTaskCreate(task1_handler,"Task-1",200,"Hello from task 1",2,&task1Handle);
+
+  configASSERT(status == pdPASS);
+
+  status = xTaskCreate(task2_handler,"Task-2",200,"Hello from task 2",2,&task2Handle);
+  
+  configASSERT(status == pdPASS);
+
+  //start the FreeRTOS scheduler
+  vTaskStartScheduler();
+  // The above function never returns it it returns then the scheduler has failed due to insufficient memory in the heap.
 
   /* USER CODE END 2 */
 
@@ -292,7 +308,27 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+static void task1_handler(void* parameters)
+{
+  //the handler should have a infinite while loop
+  while (1)
+  {
+     printf("%s\n",parameters);
+     //we might see the print staements to be random due to pre-emption which causes the task to context switch to another task of same 
+     // or higher priority even if the task is not completed to stop premption we can reset configUSE_PREEMPTION to 0 in FreeRTOSConfig.h
+     //For non preemptive or cooperative schedule we can yeiled the task once it is completed by using
+     //taskYIELD();
+  }
+  
+}
+static void task2_handler(void* parameters)
+{
+  while (1)
+  {
+    printf("%s\n",parameters);
+  }
+  
+}
 /* USER CODE END 4 */
 
 /**
