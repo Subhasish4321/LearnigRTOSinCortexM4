@@ -44,7 +44,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+#define DWT_CTRL (*(volatile uint32_t*)0xE0001000)
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -92,6 +92,14 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+
+  // Enable the DWT CYCCNT counter USING THE 0 th bit of the DWT_CTRL register to record the timestamp of the events in the SystemView.
+  DWT_CTRL |= (1 << 0);
+
+  // call the APIs for the Segger sysview configuration and start of event recording.
+  SEGGER_SYSVIEW_Conf();
+  SEGGER_SYSVIEW_Start();
+  
   status = xTaskCreate(task1_handler,"Task-1",200,"Hello from task 1",2,&task1Handle);
 
   configASSERT(status == pdPASS);
