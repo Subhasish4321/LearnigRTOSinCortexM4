@@ -2964,7 +2964,7 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
                         mtCOVERAGE_TEST_MARKER();
                     }
 
-                    prvAddTaskToReadyList( pxTCB );
+					prvReaddTaskToReadyList( pxTCB );
                 }
                 else
                 {
@@ -3192,7 +3192,7 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
             {
                 mtCOVERAGE_TEST_MARKER();
             }
-
+			traceMOVED_TASK_TO_SUSPENDED_LIST(pxTCB);
             vListInsertEnd( &xSuspendedTaskList, &( pxTCB->xStateListItem ) );
 
             #if ( configUSE_TASK_NOTIFICATIONS == 1 )
@@ -6468,6 +6468,20 @@ static void prvCheckTasksWaitingTermination( void )
 #endif /* INCLUDE_uxTaskGetStackHighWaterMark */
 /*-----------------------------------------------------------*/
 
+#if (INCLUDE_pxTaskGetStackStart == 1)
+	uint8_t* pxTaskGetStackStart( TaskHandle_t xTask)
+	{
+	    TCB_t *pxTCB;
+	    UBaseType_t uxReturn;
+        (void)uxReturn;
+
+		pxTCB = prvGetTCBFromHandle( xTask );
+		return ( uint8_t * ) pxTCB->pxStack;
+	}
+
+#endif /* INCLUDE_pxTaskGetStackStart */
+/*-----------------------------------------------------------*/
+
 #if ( INCLUDE_vTaskDelete == 1 )
 
     static void prvDeleteTCB( TCB_t * pxTCB )
@@ -7986,7 +8000,7 @@ TickType_t uxTaskResetEventItemValue( void )
                     break;
             }
 
-            traceTASK_NOTIFY( uxIndexToNotify );
+            traceTASK_NOTIFY(  );
 
             /* If the task is in the blocked state specifically to wait for a
              * notification then unblock it now. */
@@ -8128,7 +8142,7 @@ TickType_t uxTaskResetEventItemValue( void )
                     break;
             }
 
-            traceTASK_NOTIFY_FROM_ISR( uxIndexToNotify );
+            traceTASK_NOTIFY_FROM_ISR(  );
 
             /* If the task is in the blocked state specifically to wait for a
              * notification then unblock it now. */
@@ -8262,7 +8276,7 @@ TickType_t uxTaskResetEventItemValue( void )
              * semaphore. */
             ( pxTCB->ulNotifiedValue[ uxIndexToNotify ] )++;
 
-            traceTASK_NOTIFY_GIVE_FROM_ISR( uxIndexToNotify );
+            traceTASK_NOTIFY_GIVE_FROM_ISR(  );
 
             /* If the task is in the blocked state specifically to wait for a
              * notification then unblock it now. */
