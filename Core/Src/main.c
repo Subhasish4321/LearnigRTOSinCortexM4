@@ -325,7 +325,7 @@ static void task1_handler(void* parameters)
      //we might see the print statements to be random due to pre-emption which causes the task to context switch to another task of same
      // or higher priority even if the task is not completed to stop pre-emption we can reset configUSE_PREEMPTION to 0 in FreeRTOSConfig.h
      //For non preemptive or cooperative schedule we can yield the task once it is completed by using
-     taskYIELD();
+//     taskYIELD();
   }
   
 }
@@ -334,7 +334,7 @@ static void task2_handler(void* parameters)
   while (1)
   {
     printf("%s\n",parameters);
-    taskYIELD();
+//    taskYIELD();
   }
   
 }

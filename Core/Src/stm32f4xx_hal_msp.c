@@ -21,7 +21,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 /* USER CODE BEGIN Includes */
+#include "FreeRTOS.h"
 
+extern void vInitPrioGroupValue(void);
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,7 +75,8 @@ void HAL_MspInit(void)
   /* System interrupt init*/
 
   /* USER CODE BEGIN MspInit 1 */
-
+  //This is usually done by the task scheduler but since SEGGER_SYSVIEW_Start uses it before calling the scheduler we have to manually do it.
+  vInitPrioGroupValue();
   /* USER CODE END MspInit 1 */
 }
 
