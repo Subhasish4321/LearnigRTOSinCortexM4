@@ -23,4 +23,4 @@ the Expression tab by:
 1. Find the expression: _SEGGER_RTT 
 2.It contains the buffer address under aUp[1] in the pointer called pBuffer
 3.To take the event dump,use the memory browser window,give the address and the size of memory to read.
-4.export the data with extension .SVdat and select raw memory type when exporting.
+4.export the data with extension .SVdat and select raw memory type when exporting. Checking
