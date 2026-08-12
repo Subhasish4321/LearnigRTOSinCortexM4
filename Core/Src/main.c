@@ -96,9 +96,11 @@ int main(void)
   // Enable the DWT CYCCNT counter USING THE 0 th bit of the DWT_CTRL register to record the timestamp of the events in the SystemView.
   DWT_CTRL |= (1 << 0);
 
+  // Enable SEGGER UART recording to send the events to the SEGGER SystemView tool. The UART is configured in the segger_uart.c file.
+  SEGGER_UART_init(500000);
   // call the APIs for the Segger sysview configuration and start of event recording.
   SEGGER_SYSVIEW_Conf();
-  SEGGER_SYSVIEW_Start();
+  // SEGGER_SYSVIEW_Start();
   
   status = xTaskCreate(task1_handler,"Task-1",200,"Hello from task 1",2,&task1Handle);
 
@@ -321,7 +323,10 @@ static void task1_handler(void* parameters)
   //the handler should have a infinite while loop
   while (1)
   {
-     printf("%s\n",parameters);
+    char msg[100];
+    snprintf(msg,100,"%s\n",(char*)parameters);
+    SEGGER_SYSVIEW_PrintfTarget(msg);
+    //  printf("%s\n",parameters);
      //we might see the print statements to be random due to pre-emption which causes the task to context switch to another task of same
      // or higher priority even if the task is not completed to stop pre-emption we can reset configUSE_PREEMPTION to 0 in FreeRTOSConfig.h
      //For non preemptive or cooperative schedule we can yield the task once it is completed by using
@@ -333,7 +338,11 @@ static void task2_handler(void* parameters)
 {
   while (1)
   {
-    printf("%s\n",parameters);
+    char msg[100];
+    snprintf(msg,100,"%s\n",(char*)parameters);
+    //prints on the SEGGER SystemView timeline/log via UART.
+    SEGGER_SYSVIEW_PrintfTarget(msg);
+    // printf("%s\n",parameters);
     taskYIELD();
   }
   
